@@ -15,7 +15,14 @@ export default function Product(props) {
           <Card.Title as="h3">{product.name}</Card.Title>
         </Link>
 
+
+
         <Card.Text>{product.price} €</Card.Text>
+        {product.seller && product.seller.seller && (
+          <Link to={`/seller/${product.seller._id}`}>
+            {product.seller.seller.name}
+          </Link>
+        )}
       </Card.Body>
     </Card>
   );
