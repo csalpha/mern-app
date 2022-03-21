@@ -7,6 +7,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import { LinkContainer } from 'react-router-bootstrap';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
+import HomeScreen from './screens/HomeScreen';
 
 
 
@@ -99,7 +100,7 @@ function App(){
               onClick={() => setSidebarIsOpen(false)}
             >
               <Routes>
-               
+                <Route path="/" element={<HomeScreen/>}></Route>
               </Routes>
             </main>
             <footer>

@@ -12,4 +12,14 @@ productRouter.get(
     })
 );
 
+productRouter.get(
+    '/top-products',
+    expressAsyncHandler(async (req, res) => {
+      const products = await Product.find()
+        .populate()
+        .limit(5);
+      res.send(products);
+    })
+  );
+
 export default productRouter;
