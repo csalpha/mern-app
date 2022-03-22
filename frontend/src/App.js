@@ -8,6 +8,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import HomeScreen from './screens/HomeScreen';
+import ProductScreen from './screens/ProductScreen';
 
 
 
@@ -100,11 +101,11 @@ function App(){
               onClick={() => setSidebarIsOpen(false)}
             >
               <Routes>
+                <Route path="/product/:id" element={<ProductScreen/>}></Route>
                 <Route path="/" element={<HomeScreen/>}></Route>
               </Routes>
             </main>
             <footer>
-              
               
             </footer>
           </div>
