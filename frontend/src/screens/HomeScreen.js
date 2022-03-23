@@ -10,53 +10,82 @@ import { Link } from 'react-router-dom';
 import Axios from 'axios';
 import { getError } from '../utils';
 
+// Manage state by reducer hook
 // define reducer function
-const reducer = (state, action) => 
-{
-  switch (action.type) {
-    case 'FETCH_REQUEST':
-      return { ...state, loading: true };
-    case 'FETCH_SUCCESS':
-      return {
-        ...state,
-        products: action.payload.products,
-        sellers: action.payload.sellers,
-        loading: false,
-      };
-    case 'FETCH_FAIL':
-      return { ...state, loading: false, error: action.payload };
 
-    default:
-      return state;
+// reducer accept 2 parameters 
+// first: current state
+// second: action that change the state and create a new state
+const reducer = (state, action)=> {
+  switch(action.type){
+    // it happens when we start sending ajax request
+    case 'FETCH_REQUEST':
+      return {
+        ...state, // keep the previous state values
+        loading: true // only update loading to true ( show loading box )
+      }
+    case 'FETCH_SUCCESS':
+      return{
+        ...state, // keep the previous state values
+        products: action.payload.products, //contains all products from backend
+        sellers: action.payload.sellers, //constains all sellers from backend
+        loading: false // no need to show loading box
+      }
+    case 'FETCH_FAIL':
+      return{
+        ...state, // keep the previous state values
+        loading: false,
+        error: action.payload // fill the error with the error message inside action.payload
+      }
+    default: 
+      return state; // current state
   }
-};
+}
+
+
 
 export default function HomeScreen() {
+
+  // define a array that contain two values
+  // 1st - object that contains loading. error, products, sellers
+  // 2nd - dispatch - call an action and update the state 
+  // useReducer accept two parameters 
+  // 1st one - reducer
+  // 2nd one - default state object
   const [{ loading, error, products, sellers }, dispatch] = useReducer(
     reducer,
     {
-      loading: true,
-      error: '',
+      loading: true, // show loading in the begining
+      error: '',   // no error in the begining
     }
   );
 
+  // useEffect ( async function , array )
   useEffect(() => {
+    // async function
     const fetchData = async () => {
-      dispatch({ type: 'FETCH_REQUEST' });
+      // set loading to true by dispatching FETCH_REQUEST action
+      dispatch({ type: 'FETCH_REQUEST' }); // accept a object
       try {
+        // call an Api ( with ajax request ) and get products from backend
         const { data: products } = await Axios.get(
           '/api/products/top-products'
         );
-        const { data: sellers } = await Axios.get('/api/users/top-sellers');
+        //call an Api ( with ajax request ) and get sellers from backend
+        const { data: sellers } = await Axios.get(
+          '/api/users/top-sellers'
+        );
+        // call FETCH_SUCCESS action and update a state with products and sellers from backend
         dispatch({ type: 'FETCH_SUCCESS', payload: { products, sellers } });
       } catch (error) {
+        // if there is a an error
         dispatch({
           type: 'FETCH_FAIL',
           payload: getError(error),
         });
       }
     };
-
+    // call async function
     fetchData();
   }, [dispatch]);
 

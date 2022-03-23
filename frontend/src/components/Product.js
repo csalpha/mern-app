@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
+import Rating from './Rating';
 
 export default function Product(props) {
   const { product } = props;
@@ -15,7 +16,10 @@ export default function Product(props) {
           <Card.Title as="h3">{product.name}</Card.Title>
         </Link>
 
-
+        <Rating
+          rating={product.rating}
+          numReviews={product.numReviews}>
+          </Rating>
 
         <Card.Text>{product.price} €</Card.Text>
         {product.seller && product.seller.seller && (
