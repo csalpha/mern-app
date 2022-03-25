@@ -9,6 +9,7 @@ import MessageBox from '../components/MessageBox';
 import { Link } from 'react-router-dom';
 import Axios from 'axios';
 import { getError } from '../utils';
+import { Helmet } from 'react-helmet-async';
 
 // Manage state by reducer hook
 // define reducer function
@@ -41,8 +42,6 @@ const reducer = (state, action)=> {
       return state; // current state
   }
 }
-
-
 
 export default function HomeScreen() {
 
@@ -89,6 +88,9 @@ export default function HomeScreen() {
     fetchData();
   }, [dispatch]);
 
+  console.log(products);
+  console.log(sellers);
+
   return (
     <div>
       {loading ? (
@@ -108,6 +110,9 @@ export default function HomeScreen() {
               </div>
             ))}
           </Carousel>
+          <Helmet>
+             <title>Games</title>
+          </Helmet>
           <h2>Featured Products</h2>
           {products.length === 0 && <MessageBox>No Product Found</MessageBox>}
           <Row>

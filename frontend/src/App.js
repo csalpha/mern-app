@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import Axios from 'axios';
 import Nav from 'react-bootstrap/Nav';
@@ -9,13 +9,15 @@ import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import HomeScreen from './screens/HomeScreen';
 import ProductScreen from './screens/ProductScreen';
-
-
+import { Store } from './Store';
 
 function App(){
+  
+    const { state } = useContext(Store);
+    const { cart } = state;
+    const { cartItems } = cart;
 
     const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
-
     const [categories, setCategories] = useState([]);
 
     useEffect(() => {
@@ -30,8 +32,6 @@ function App(){
       fetchCategories();
     }, []);
   
-    console.log(categories);
-
     return (
         <BrowserRouter>
           <div
@@ -58,9 +58,14 @@ function App(){
                   <Navbar.Collapse id="basic-navbar-nav">
                     <SearchBox />
                     <Nav className="me-auto">
-                      <Link to="/cart" className="nav-link">
-                        Cart
-                      </Link>
+                    <Link to="/cart" className="nav-link">
+                    Cart
+                    {cartItems.length > 0 && (
+                      <span className='badge rounded-pill bg-danger'> 
+                        {cartItems.length}
+                      </span>
+                    )}
+                  </Link>
 
                         <Link className="nav-link" to="/signin">
                           Sign In

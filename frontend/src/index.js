@@ -1,12 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import App from './App';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
+import { StoreProvider } from './Store';
 
 ReactDOM.render(
-          <App />,
+      <StoreProvider>
+        <HelmetProvider>
+          <App />
+        </HelmetProvider>
+        </StoreProvider>,
   document.getElementById('root')
 );
 

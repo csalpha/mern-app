@@ -2,6 +2,7 @@ import Axios from 'axios';
 import React, {
   useEffect,
   useReducer,
+  useContext
 } from 'react';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
@@ -14,6 +15,8 @@ import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import Rating from '../components/Rating';
 import { getError } from '../utils';
+import { Helmet } from 'react-helmet-async';
+import { Store } from '../Store';
 
 //Manage state by reducer hook
 // State is complex
@@ -70,13 +73,26 @@ export default function ProductScreen() {
     fetchData();
   }, [dispatch, slug]);
 
-  // add item to the cart
-  const addToCartHandler = async () => {
+    // Get the context
+  // Rename dispatch to 'ctxDispatch' - context dispatch
+  // by using useContext we can have access to the state of the context
+  // and change the context
+  const { state, dispatch: ctxDispatch } = useContext(Store);
 
+// to add a item to the cart i need to dispatch 
+  // an action on the react context
+  const addToCartHandler = async () => {
+    ctxDispatch(
+      {
+        type: 'CART_ADD_ITEM',
+        payload: {
+          ...product, 
+          quntity: 1
+        }
+      }
+    );
   };
 
-
-  
   return loading ? (
     <LoadingBox></LoadingBox>
   ) : error ? (
@@ -94,7 +110,11 @@ export default function ProductScreen() {
         <Col md={3}>
           <ListGroup variant="flush">
             <ListGroup.Item>
-              <h1>{product.name}</h1>
+              <Helmet>
+                <title>{product.name}</title>
+              </Helmet>
+                <h1>{product.name}</h1>
+             
             </ListGroup.Item>
             <ListGroup.Item>
               <Rating
