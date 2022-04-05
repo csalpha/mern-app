@@ -11,6 +11,7 @@ import HomeScreen from './screens/HomeScreen';
 import ProductScreen from './screens/ProductScreen';
 import { Store } from './Store';
 import CartScreen from './screens/CartScreen';
+import SigninScreen from './screens/Signinscreen';
 
 function App(){
   
@@ -112,7 +113,7 @@ function App(){
                 <Route path="/product/:id" element={<ProductScreen/>}></Route>
                 <Route path="/" element={<HomeScreen/>}></Route>
                 <Route path="/cart" element={<CartScreen/>}></Route>
-                {/* <Route path="/cart" element={<CartScreen />}></Route> */}
+                <Route path="/signin" element={<SigninScreen />}></Route>
               </Routes>
             </main>
             <footer>
