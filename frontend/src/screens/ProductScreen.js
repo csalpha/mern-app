@@ -1,8 +1,9 @@
 import Axios from 'axios';
 import React, {
+  useContext,
   useEffect,
   useReducer,
-  useContext
+  useState,
 } from 'react';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
@@ -10,22 +11,16 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Badge from 'react-bootstrap/Badge'
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import Rating from '../components/Rating';
+import { Store } from '../Store';
 import { getError } from '../utils';
 import { Helmet } from 'react-helmet-async';
-import { Store } from '../Store';
 
-//Manage state by reducer hook
-// State is complex
-// Next state depends on the previous on
-// define reducer
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'REFRESH_PRODUCT':
-      return { ...state, product: action.payload };
     case 'FETCH_REQUEST':
       return { ...state, loading: true };
     case 'FETCH_SUCCESS':
@@ -39,60 +34,76 @@ const reducer = (state, action) => {
 
 export default function ProductScreen() {
 
-  const [{ loading, error, product}, dispatch] =
-    useReducer(reducer, {
-      loading: true,
-      error: '',
-    });
-
-  const params = useParams();
-  const { id: slug } = params;
-
-  // useEffect ( async function , array )
-  useEffect(() => {
-    // async function
-    const fetchData = async () => {
-      //
-      dispatch({ type: 'FETCH_REQUEST' });
-      try {
-        // call an Api ( with ajax request ) and get product from backend
-        const { data } = await Axios.get(`/api/products/slug/${slug}`);
-        // call FETCH_SUCCESS action and update a state with data
-        dispatch({ 
-          type: 'FETCH_SUCCESS', // action
-          payload: data // new state
-        });
-      } catch (error) {
-        dispatch({
-          type: 'FETCH_FAIL', // action
-          payload: getError(error), // new state
-        });
-      }
-    };
-    // call async functionn
-    fetchData();
-  }, [dispatch, slug]);
-
-    // Get the context
+  // to add a item to the cart, i need to dispatch an action on the react context
+  
+  // Get the context
   // Rename dispatch to 'ctxDispatch' - context dispatch
   // by using useContext we can have access to the state of the context
   // and change the context
   const { state, dispatch: ctxDispatch } = useContext(Store);
 
-// to add a item to the cart i need to dispatch 
-  // an action on the react context
-  const addToCartHandler = async () => {
-    ctxDispatch(
-      {
-        type: 'CART_ADD_ITEM',
-        payload: {
-          ...product, 
-          quntity: 1
-        }
-      }
-    );
-  };
+  const { cart } = state;
+  const [{ loading, error, product }, dispatch] =
+    useReducer(reducer, {
+      loading: true,
+      error: '',
+    });
+  
+  // useNavigate hook
+  const navigate = useNavigate();
 
+  const params = useParams();
+  const { id: slug } = params;
+
+  const [selectedImage, setSelectedImage] = useState('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      dispatch({ type: 'FETCH_REQUEST' });
+      try {
+        // call an Api ( with ajax request ) and get product from backend
+        const { data } = await Axios.get(`/api/products/slug/${slug}`);
+        dispatch({ 
+          type: 'FETCH_SUCCESS',  // action
+          payload: data // new state
+      });
+      } catch (error) {
+        dispatch({
+          type: 'FETCH_FAIL', // action
+          payload: getError(error),  // new state
+        });
+      }
+    };
+
+    fetchData();
+  }, [dispatch, slug]);
+
+  // to add a item to the cart i need to dispatch 
+  // an action on the react context
+
+  const addToCartHandler = async () => {
+    // exist item
+    const existItem = cart.cartItems.find((x) => x._id === product._id);
+
+    // quantity
+    const quantity = existItem ? existItem.quantity + 1 : 1;
+
+    // ajax request to get data product
+    const { data } = await Axios.get(`/api/products/${product._id}`);
+
+    //
+    if (data.countInStock < quantity) {
+      window.alert('Sorry. Product is out of stock');
+      return;
+    }
+    // dispatch action 
+    // payload - pass the product and the quantity
+    ctxDispatch({ type: 'CART_ADD_ITEM', payload: { ...product, quantity } });
+    
+    // Redirect user to the cart screen
+    navigate('/cart');
+  };
+  
   return loading ? (
     <LoadingBox></LoadingBox>
   ) : error ? (
@@ -103,7 +114,7 @@ export default function ProductScreen() {
         <Col md={6}>
           <img
             className="img-large"
-            src={product.image}
+            src={selectedImage || product.image}
             alt={product.name}
           ></img>
         </Col>
@@ -113,8 +124,7 @@ export default function ProductScreen() {
               <Helmet>
                 <title>{product.name}</title>
               </Helmet>
-                <h1>{product.name}</h1>
-             
+              <h1>{product.name}</h1>
             </ListGroup.Item>
             <ListGroup.Item>
               <Rating
@@ -122,7 +132,25 @@ export default function ProductScreen() {
                 numReviews={product.numReviews}
               ></Rating>
             </ListGroup.Item>
-            <ListGroup.Item>Pirce : {product.price} €</ListGroup.Item>
+            <ListGroup.Item>Pirce : €{product.price}</ListGroup.Item>
+            <ListGroup.Item>
+              <Row xs={1} md={2} className="g-2">
+                {[product.image, ...product.images].map((x) => (
+                  <Col key={x}>
+                    <Card>
+                      <Button
+                        className="thumbnail"
+                        type="button"
+                        variant="light"
+                        onClick={() => setSelectedImage(x)}
+                      >
+                        <Card.Img variant="top" src={x} alt="product" />
+                      </Button>
+                    </Card>
+                  </Col>
+                ))}
+              </Row>
+            </ListGroup.Item>
             <ListGroup.Item>
               Description:
               <p>{product.description}</p>
@@ -148,7 +176,7 @@ export default function ProductScreen() {
                 <ListGroup.Item>
                   <Row>
                     <Col>Pirce:</Col>
-                    <Col>{product.price} €</Col>
+                    <Col>€{product.price}</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>

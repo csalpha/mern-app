@@ -10,6 +10,7 @@ import Button from 'react-bootstrap/Button';
 import HomeScreen from './screens/HomeScreen';
 import ProductScreen from './screens/ProductScreen';
 import { Store } from './Store';
+import CartScreen from './screens/CartScreen';
 
 function App(){
   
@@ -62,7 +63,9 @@ function App(){
                     Cart
                     {cartItems.length > 0 && (
                       <span className='badge rounded-pill bg-danger'> 
-                        {cartItems.length}
+                        {//use reduce function to calculate accumulator (a) and current item (c)
+                        // default value to accumulator is zero
+                        cartItems.reduce( (a, c) => a + c.quantity, 0)}
                       </span>
                     )}
                   </Link>
@@ -108,6 +111,8 @@ function App(){
               <Routes>
                 <Route path="/product/:id" element={<ProductScreen/>}></Route>
                 <Route path="/" element={<HomeScreen/>}></Route>
+                <Route path="/cart" element={<CartScreen/>}></Route>
+                {/* <Route path="/cart" element={<CartScreen />}></Route> */}
               </Routes>
             </main>
             <footer>

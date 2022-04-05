@@ -88,9 +88,6 @@ export default function HomeScreen() {
     fetchData();
   }, [dispatch]);
 
-  console.log(products);
-  console.log(sellers);
-
   return (
     <div>
       {loading ? (
