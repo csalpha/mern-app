@@ -15,6 +15,13 @@ const initialState = {
         JSON.parse(localStorage.getItem('cartItems')) 
         // otherwise, set it to empty array
         :[], 
+
+        // if userInfo exist in a localStorage
+        userInfo: localStorage.getItem('userInfo')
+        // use JSON.parse to convert userInfo string to javaScript object 
+        ? JSON.parse(localStorage.getItem('userInfo'))
+        // otherwise, set it to null
+        : null,
     }
 }
 
@@ -53,7 +60,8 @@ function reducer(state, action){
                      cartItems // update cartItems
         } };
         }
-        case 'CART_REMOVE_ITEM': {
+        case 'CART_REMOVE_ITEM': 
+        {
             // cartItems - filter out item that i passed as action.payload
             const cartItems = state.cart.cartItems.filter(
               (item) => item._id !== action.payload._id
@@ -65,14 +73,24 @@ function reducer(state, action){
                                   JSON.stringify(cartItems)
                                                                 );
 
-            return { 
-                    ...state, // keep all values in the field
-                    cart: { 
-                            ...state.cart, // keep all values in the Cart Object state
-                            cartItems // update cartItems
-                        } 
-                    };
+        return { 
+                ...state, // keep all values in the field
+                cart: { 
+                        ...state.cart, // keep all values in the Cart Object state
+                        cartItems // update cartItems
+                } 
+            };
           }
+        case 'USER_SIGNIN':
+          return { 
+              ...state,  // keep the previous state
+              userInfo: action.payload // update user info
+            };  
+        case 'USER_SIGNOUT':
+            return{
+              ...state, // keep the previous state
+              userInfo: null // set userInfo to null
+            };    
         default:
             // current state
             return state;

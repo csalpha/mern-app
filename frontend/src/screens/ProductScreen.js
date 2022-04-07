@@ -19,16 +19,32 @@ import { Store } from '../Store';
 import { getError } from '../utils';
 import { Helmet } from 'react-helmet-async';
 
+
+// Manage state by reducer hook
+// define reducer function
+
+// reducer accept 2 parameters and return an object
+// first: current state
+// second: action that change the state and create a new state
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'FETCH_REQUEST':
-      return { ...state, loading: true };
+    case 'FETCH_REQUEST': 
+
+      return { ...state, // keep the previous state values
+               loading: true  };// only update loading to true ( show loading box )    
+
     case 'FETCH_SUCCESS':
-      return { ...state, product: action.payload, loading: false };
+      return { ...state, // keep the previous state values
+                product: action.payload, // fill the product with the product inside action.payload
+                loading: false }; // updadte loading to false
+
     case 'FETCH_FAIL':
-      return { ...state, loading: false, error: action.payload };
+      return { ...state, // keep the previous state values
+                loading: false, // updadte loading to false
+                error: action.payload // fill the error with the error message inside action.payload
+              };
     default:
-      return state;
+      return state; // return current state
   }
 };
 
@@ -44,10 +60,7 @@ export default function ProductScreen() {
 
   const { cart } = state;
   const [{ loading, error, product }, dispatch] =
-    useReducer(reducer, {
-      loading: true,
-      error: '',
-    });
+    useReducer(reducer, { loading: true, error: ''});
   
   // useNavigate hook
   const navigate = useNavigate();
@@ -132,7 +145,7 @@ export default function ProductScreen() {
                 numReviews={product.numReviews}
               ></Rating>
             </ListGroup.Item>
-            <ListGroup.Item>Pirce : €{product.price}</ListGroup.Item>
+            <ListGroup.Item>Price : €{product.price}</ListGroup.Item>
             <ListGroup.Item>
               <Row xs={1} md={2} className="g-2">
                 {[product.image, ...product.images].map((x) => (

@@ -4,6 +4,7 @@ import Axios from 'axios';
 import Nav from 'react-bootstrap/Nav';
 import SearchBox from './components/SearchBox';
 import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown'
 import { LinkContainer } from 'react-router-bootstrap';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
@@ -11,13 +12,33 @@ import HomeScreen from './screens/HomeScreen';
 import ProductScreen from './screens/ProductScreen';
 import { Store } from './Store';
 import CartScreen from './screens/CartScreen';
-import SigninScreen from './screens/Signinscreen';
+import SigninScreen from './screens/SigninScreen';
+import { Helmet } from 'react-helmet-async';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App(){
   
-    const { state } = useContext(Store);
-    const { cart } = state;
+    // get state and ctxDispatch from useContext
+    const { state,  dispatch: ctxDispatch } = useContext(Store);
+
+    // from the state get cart and userInfo 
+    const { cart, userInfo } = state;
+
+    // from the cart get cartItems
     const { cartItems } = cart;
+
+    // define signoutHandler
+    const signoutHandler = () => {
+      // call contextDispatch
+      ctxDispatch({ type: 'USER_SIGNOUT'});
+
+      // remove userInfo from the localStorage
+      localStorage.removeItem('userInfo');
+
+    };
+
+
 
     const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
     const [categories, setCategories] = useState([]);
@@ -43,7 +64,10 @@ function App(){
                 : 'site-container d-flex flex-column'
             }
           >
-           
+              <Helmet>
+          <title>Games Store: ECommerce website </title>
+        </Helmet>
+        <ToastContainer position="bottom-center" limit={1} />
             <header>
               <Navbar bg="dark" variant="dark" expand="lg">
                 <Container>
@@ -60,7 +84,7 @@ function App(){
                   <Navbar.Collapse id="basic-navbar-nav">
                     <SearchBox />
                     <Nav className="me-auto">
-                    <Link to="/cart" className="nav-link">
+                <Link to="/cart" className="nav-link">
                     Cart
                     {cartItems.length > 0 && (
                       <span className='badge rounded-pill bg-danger'> 
@@ -70,11 +94,68 @@ function App(){
                       </span>
                     )}
                   </Link>
+                  { // fetch user info from store
+                    // check user info 
+                  userInfo ? // userInfo does exist
+                  (          // show user information
+                      <NavDropdown title={userInfo.name} id="basic-nav-dropdown">
+                        <LinkContainer to="/profile">
+                          <NavDropdown.Item>User Profile</NavDropdown.Item>
+                        </LinkContainer>
+                        <LinkContainer to="/orderhistory">
+                          <NavDropdown.Item>Order History</NavDropdown.Item>
+                        </LinkContainer>
 
-                        <Link className="nav-link" to="/signin">
-                          Sign In
+                        <NavDropdown.Divider />
+                        <Link
+                          className="dropdown-item"
+                          to="#signout"
+                          onClick={signoutHandler}
+                        >
+                          Sign Out
                         </Link>
-                    </Nav>
+                      </NavDropdown>
+                  ) 
+                  : // userInfo doesn't exist
+                    // show sign in button
+                  (
+                    <Link className="nav-link" to="/signin">
+                      Sign In
+                    </Link>
+                  )}
+                  {userInfo && userInfo.isSeller && 
+                  (
+                    <NavDropdown title="Seller" id="basic-nav-dropdown">
+                      <LinkContainer to="/productlist/seller">
+                        <NavDropdown.Item>Products</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to="/orderlist/seller">
+                        <NavDropdown.Item>Orders</NavDropdown.Item>
+                      </LinkContainer>
+                    </NavDropdown>
+                  )}
+
+                  {userInfo && userInfo.isAdmin && 
+                  (
+                    <NavDropdown title="Admin" id="basic-nav-dropdown">
+                      <LinkContainer to="/dashboard">
+                        <NavDropdown.Item>Dashboard</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to="/productlist">
+                        <NavDropdown.Item>Products</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to="/orderlist">
+                        <NavDropdown.Item>Orders</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to="/userlist">
+                        <NavDropdown.Item>Users</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to="/support">
+                        <NavDropdown.Item>Support</NavDropdown.Item>
+                      </LinkContainer>
+                    </NavDropdown>
+                  )}
+                </Nav>
                   </Navbar.Collapse>
                 </Container>
               </Navbar>
@@ -95,8 +176,7 @@ function App(){
                   <Nav.Item key={category}>
                     <LinkContainer
                       to={`/search?category=${category}`}
-                      onClick={() => setSidebarIsOpen(false)}
-                    >
+                      onClick={() => setSidebarIsOpen(false)}>
                       <Nav.Link>{category}</Nav.Link>
                     </LinkContainer>
                   </Nav.Item>
