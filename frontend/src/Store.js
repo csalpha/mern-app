@@ -22,14 +22,20 @@ const initialState = {
         ? JSON.parse(localStorage.getItem('userInfo'))
         // otherwise, set it to null
         : null,
+
+        // if shippingAddress exist in a localStorage
+        shippingAddress: localStorage.getItem('shippingAddress')
+         // use JSON.parse to convert shippingAddress string to javaScript object 
+        ? JSON.parse(localStorage.getItem('shippingAddress'))
+        // otherwise, set empty object
+        : { location: {} },
     }
 }
 
 // define reducer
 function reducer(state, action){
     switch(action.type){
-        case 'CART_ADD_ITEM': 
-        {
+        case 'CART_ADD_ITEM': {
             // new item
             const newItem = action.payload;
             
@@ -58,7 +64,8 @@ function reducer(state, action){
                      cart: { 
                      ...state.cart, // keep all values in the Cart Object state
                      cartItems // update cartItems
-        } };
+                   } 
+                  };
         }
         case 'CART_REMOVE_ITEM': 
         {
@@ -80,18 +87,33 @@ function reducer(state, action){
                         cartItems // update cartItems
                 } 
             };
-          }
+        }
         case 'USER_SIGNIN':
           return { 
               ...state,  // keep the previous state
               userInfo: action.payload // update user info
             };  
         case 'USER_SIGNOUT':
-            return{
-              ...state, // keep the previous state
-              userInfo: null // set userInfo to null
-            };    
-        default:
+          return {
+            ...state,
+            userInfo: null,
+            cart: {
+              cartItems: [], // clean cart
+              shippingAddress: {}, // clean shippingAddress
+            },
+          };  
+        case 'SAVE_SHIPPING_ADDRESS':
+          return {
+            ...state, // keep the previous state
+            cart: {
+              ...state.cart, // keep the previous cart state
+              shippingAddress: {
+                ...state.cart.shippingAddress,
+                ...action.payload,
+              },
+            },
+          };
+            default:
             // current state
             return state;
     }

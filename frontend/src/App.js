@@ -16,6 +16,7 @@ import SigninScreen from './screens/SigninScreen';
 import { Helmet } from 'react-helmet-async';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ShippingAddressScreen from './screens/ShippingAddressScreen';
 
 function App(){
   
@@ -35,6 +36,9 @@ function App(){
 
       // remove userInfo from the localStorage
       localStorage.removeItem('userInfo');
+
+      // remove shipping from the localStorage
+      localStorage.removeItem('ShippingAddress');
 
     };
 
@@ -194,6 +198,7 @@ function App(){
                 <Route path="/" element={<HomeScreen/>}></Route>
                 <Route path="/cart" element={<CartScreen/>}></Route>
                 <Route path="/signin" element={<SigninScreen />}></Route>
+                <Route path="/shipping" element={<ShippingAddressScreen />}></Route>
               </Routes>
             </main>
             <footer>
