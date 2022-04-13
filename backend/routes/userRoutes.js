@@ -59,6 +59,38 @@ userRouter.post(
   })
 );
 
+// define post request for Sign Up api
+userRouter.post(
+  '/signup',
+  // catch the error in async function
+  expressAsyncHandler(async (req, res) => {
+    // create new user from mongoose model
+    // create a new instance from User
+    // User is comming from UserModel
+    const user = new User({
+      // fill name/email/password from the input forms
+      name: req.body.name,
+      email: req.body.email,
+      //change plain text password to encripted one in the database
+      password: bcrypt.hashSync(req.body.password, 8),
+    });
+
+
+    // save new user in the database
+    const createdUser = await user.save();
+
+    // return user data to the frontend
+    res.send({
+      _id: createdUser._id,
+      name: createdUser.name,
+      email: createdUser.email,
+      isAdmin: createdUser.isAdmin,
+      isSeller: user.isSeller,
+      token: generateToken(createdUser),
+    });
+  })
+);
+
 export default userRouter;
 
 

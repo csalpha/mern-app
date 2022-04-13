@@ -29,6 +29,11 @@ const initialState = {
         ? JSON.parse(localStorage.getItem('shippingAddress'))
         // otherwise, set empty object
         : { location: {} },
+
+        // if paymentMethod exist in a localStorage
+        paymentMethod: localStorage.getItem('paymentMethod')
+        ? localStorage.getItem('paymentMethod')
+        : '',
     }
 }
 
@@ -88,6 +93,10 @@ function reducer(state, action){
                 } 
             };
         }
+        case 'CART_CLEAR':
+          return { ...state, // keep the previous state values
+                   cart: { ...state.cart, // keep the state of cart
+                           cartItems: [] } }; // change cart items to empty array
         case 'USER_SIGNIN':
           return { 
               ...state,  // keep the previous state
@@ -100,6 +109,7 @@ function reducer(state, action){
             cart: {
               cartItems: [], // clean cart
               shippingAddress: {}, // clean shippingAddress
+              paymentMethod: '',
             },
           };  
         case 'SAVE_SHIPPING_ADDRESS':
@@ -109,10 +119,18 @@ function reducer(state, action){
               ...state.cart, // keep the previous cart state
               shippingAddress: {
                 ...state.cart.shippingAddress,
-                ...action.payload,
+                ...action.payload, // save shippingAddress
               },
             },
           };
+          case 'SAVE_PAYMENT_METHOD':
+            return {
+              ...state, // keep the previous state
+              cart: { 
+                ...state.cart, // keep the previous cart state
+                paymentMethod: action.payload // save payment method
+              },
+            };
             default:
             // current state
             return state;

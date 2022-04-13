@@ -10,7 +10,10 @@ import { Store } from '../Store';
 import { getError } from '../utils';
 
 export default function SigninScreen() {
+
+  // navigate - is commig from useNavigate hook 
   const navigate = useNavigate();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -60,7 +63,7 @@ export default function SigninScreen() {
       navigate(redirect); // redirect user to the redirect variable
     }
   }, // dependecy array with all variables
-   [navigate, redirect, userInfo]);
+   [navigate, redirect, userInfo]); 
 
 
   return (

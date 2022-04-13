@@ -19,6 +19,38 @@ export const generateToken =(user) => {
                     ); 
                                                     
 };
+ // middleware function
+//
+export const isAuth = (req, res, next) => {
+    // get the authorization from req.headers
+    const authorization = req.headers.authorization;
+
+    // check if authorization does exist
+    if (authorization) {
+      // if we have authorization get the token by using a slice
+      // read 7 caracteres and get the token part
+      const token = authorization.slice(7, authorization.length); // Bearer XXXXXX
+      
+      // use jwt.verify function
+      jwt.verify(
+        token,
+        process.env.JWT_SECRET || 'somethingsecret',
+        //call back function
+        (err, decode) => {
+          if (err) {
+            // error
+            res.status(401).send({ message: 'Invalid Token' });
+          } else {
+            // decrypted version of the token that includes user information
+            req.user = decode;
+            next();
+          }
+        }
+      );
+    } else {
+      res.status(401).send({ message: 'No Token' });
+    }
+  };
 
 
 

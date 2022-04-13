@@ -13,10 +13,13 @@ import ProductScreen from './screens/ProductScreen';
 import { Store } from './Store';
 import CartScreen from './screens/CartScreen';
 import SigninScreen from './screens/SigninScreen';
+import SignupScreen from './screens/SignupScreen';
 import { Helmet } from 'react-helmet-async';
 import { toast, ToastContainer } from 'react-toastify';
+import PlaceOrderScreen from './screens/PlaceOrderScreen';
 import 'react-toastify/dist/ReactToastify.css';
 import ShippingAddressScreen from './screens/ShippingAddressScreen';
+import PaymentMethodScreen from './screens/PaymentMethodScreen';
 
 function App(){
   
@@ -39,6 +42,9 @@ function App(){
 
       // remove shipping from the localStorage
       localStorage.removeItem('ShippingAddress');
+
+      // remove shipping from the localStorage
+      localStorage.removeItem('paymentMethod');
 
     };
 
@@ -198,7 +204,10 @@ function App(){
                 <Route path="/" element={<HomeScreen/>}></Route>
                 <Route path="/cart" element={<CartScreen/>}></Route>
                 <Route path="/signin" element={<SigninScreen />}></Route>
+                <Route path="/signup" element={<SignupScreen />}></Route>
                 <Route path="/shipping" element={<ShippingAddressScreen />}></Route>
+                <Route path="/payment" element={<PaymentMethodScreen />}></Route>
+                <Route path="/placeorder" element={<PlaceOrderScreen />}></Route>
               </Routes>
             </main>
             <footer>

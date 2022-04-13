@@ -2,7 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import productRouter from './routes/productRoutes.js';
 import userRouter from './routes/userRoutes.js';
-
+import orderRouter from './routes/orderRoutes.js';
 
 // define app from express
 const app = express();
@@ -16,6 +16,7 @@ mongoose.connect( process.env.MONGODB_URI || 'mongodb://localhost/ecommerce');
 
 app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
+app.use('/api/orders', orderRouter);
 
 app.get('/', (req, res) => {
     res.send("Server is ready");
