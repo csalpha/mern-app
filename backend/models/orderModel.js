@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const orderSchema = new mongoose.Schema(
   {
-    // Save the item information
+    // Define order items
     orderItems: [
       {
         slug: { type: String, required: true },
