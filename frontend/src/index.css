@@ -1,8 +1,43 @@
+/*criar css para cada um dos componentes*/
+
+/* *{
+  margin: 0;
+  padding: 0;
+}
+
+body{
+  background-color: rgb(173, 104, 47);
+  color:rgb(3, 3, 3);
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  definir que o nosso body ocupa toda a altura do nosso view port
+  height: 100vh;
+} */
+
+/*selector universal - remover margin e o padding de 
+  todos os componentes que possam existir no html*/
+*{
+  margin: 0;
+  padding: 0;
+}
+
+body{
+ 
+  background-color: #000000;
+  color: white;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+} 
+
+
 body,
 .site-container,
 #root {
   min-height: 100vh;
 }
+
 li {
   list-style-type: none;
 }

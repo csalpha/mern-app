@@ -44,5 +44,30 @@ orderRouter.post(
   })
 );
 
+// implement api for get
+// send get request to '/:id' api
+orderRouter.get(
+  '/:id',
+  // define a middleware
+  isAuth,// fill the user of the request
+   // catch all errors
+  expressAsyncHandler(async (req, res) => {
+
+    // search order in the database and return it to the frontend
+    // findById it's a function from mongoose
+    // What we pass is a id that user entred in the url
+    const order = await Order.findById(req.params.id);
+
+    // check if order does exist
+    if (order) {
+      // return order
+      res.send(order);
+    } else {
+      // return error message
+      res.status(404).send({ message: 'Order Not Found' });
+    }
+  })
+);
+
 
 export default orderRouter;

@@ -1,3 +1,6 @@
+<!--único ficheiro HTML que uma aplicação de react tem.
+Os Browsers não percebem como executar javascript 
+sem ser incooporado dentro de um ficheiro HTML-->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -34,10 +37,45 @@
       href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css"
     />
     <title>React App</title>
+
+    <!-- <script>
+      console.log(document.body)
+    </script>    -->
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    
     <div id="root"></div>
+
+    <!-- <h1 id="titulo">HTML</h1> -->
+
+   
+
+    <script> 
+
+    // // if(confirm("Deseja ir para o google?"))
+    // // {
+    // //   location.href = "https://www.google.com/";
+    // // }
+    // alert(location.href);
+    //document.getElementById('titulo').innerText = 'Novo texto';
+    //document.body.style.background = "black";
+    //document.body.style.color = "red";
+
+    // // function saudacao()
+    // // {
+    // //   alert('Largura da pagina: ' + window.innerWidth);
+    // //   alert('Altura da pagina: ' + window.innerHeight);
+    // // }
+
+    // //window.saudacao();
+    // // saudacao();
+    
+    </script>
+
+<script>
+  console.log(document.body.childNodes)
+</script>   
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
